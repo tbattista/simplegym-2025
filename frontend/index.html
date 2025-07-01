@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Log Template Editor</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="/static/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Header -->
+        <header class="row bg-primary text-white py-3 mb-4">
+            <div class="col">
+                <h1 class="h3 mb-0">
+                    <i class="bi bi-clipboard-data me-2"></i>
+                    Gym Log Template Editor
+                </h1>
+                <p class="mb-0 opacity-75">Create personalized workout logs from templates</p>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="row">
+            <div class="col-lg-8 mx-auto">
+                
+                <!-- Alert Messages -->
+                <div id="alertContainer"></div>
+
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your workout log...</p>
+                </div>
+
+                <!-- Main Form -->
+                <form id="workoutForm" class="needs-validation" novalidate>
+                    
+                    <!-- Template Selection -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-file-earmark-text me-2"></i>
+                                Template Selection
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="templateSelect" class="form-label">Choose Template</label>
+                                <select class="form-select" id="templateSelect" required>
+                                    <option value="">Loading templates...</option>
+                                </select>
+                                <div class="invalid-feedback">
+                                    Please select a template.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workout Details -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-calendar-event me-2"></i>
+                                Workout Details
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="workoutName" class="form-label">Workout Name</label>
+                                    <input type="text" class="form-control" id="workoutName" 
+                                           placeholder="e.g., Push Day" value="Push Day" required>
+                                    <div class="invalid-feedback">
+                                        Please provide a workout name.
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="workoutDate" class="form-label">Workout Date</label>
+                                    <input type="date" class="form-control" id="workoutDate" required>
+                                    <div class="invalid-feedback">
+                                        Please select a date.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Exercises -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-trophy me-2"></i>
+                                Main Exercises
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div id="exerciseGroups">
+                                <!-- Exercise groups will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bonus Exercises -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-star me-2"></i>
+                                Bonus Exercises
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="bonus1" class="form-label">Bonus Exercise 1</label>
+                                    <input type="text" class="form-control" id="bonus1" 
+                                           placeholder="e.g., Face Pulls" value="Face Pulls">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="bonus1-sets" class="form-label">Sets</label>
+                                    <input type="text" class="form-control" id="bonus1-sets" 
+                                           placeholder="3" value="2">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="bonus1-reps" class="form-label">Reps</label>
+                                    <input type="text" class="form-control" id="bonus1-reps" 
+                                           placeholder="15" value="15">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="bonus1-rest" class="form-label">Rest</label>
+                                    <input type="text" class="form-control" id="bonus1-rest" 
+                                           placeholder="30s" value="30s">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label for="bonus2" class="form-label">Bonus Exercise 2</label>
+                                    <input type="text" class="form-control" id="bonus2" 
+                                           placeholder="e.g., Calf Raises" value="Calf Raises">
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="bonus2-sets" class="form-label">Sets</label>
+                                    <input type="text" class="form-control" id="bonus2-sets" 
+                                           placeholder="3" value="3">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="bonus2-reps" class="form-label">Reps</label>
+                                    <input type="text" class="form-control" id="bonus2-reps" 
+                                           placeholder="20" value="20">
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="bonus2-rest" class="form-label">Rest</label>
+                                    <input type="text" class="form-control" id="bonus2-rest" 
+                                           placeholder="45s" value="45s">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <button type="button" class="btn btn-outline-secondary me-md-2" id="previewBtn">
+                                    <i class="bi bi-eye me-1"></i>
+                                    Preview
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="generateBtn">
+                                    <i class="bi bi-download me-1"></i>
+                                    Generate & Download
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <!-- Preview Modal -->
+                <div class="modal fade" id="previewModal" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">
+                                    <i class="bi bi-eye me-2"></i>
+                                    Preview Changes
+                                </h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="previewContent">
+                                    <!-- Preview content will be loaded here -->
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="document.getElementById('generateBtn').click()">
+                                    Generate Document
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="row mt-5 py-4 bg-light">
+            <div class="col text-center text-muted">
+                <p class="mb-0">
+                    <i class="bi bi-heart-fill text-danger me-1"></i>
+                    Gym Log Template Editor - Built with FastAPI & Bootstrap
+                </p>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
