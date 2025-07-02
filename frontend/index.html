@@ -186,24 +186,56 @@
 
                 <!-- Preview Modal -->
                 <div class="modal fade" id="previewModal" tabindex="-1">
-                    <div class="modal-dialog modal-lg">
+                    <div class="modal-dialog modal-xl">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title">
                                     <i class="bi bi-eye me-2"></i>
-                                    Preview Changes
+                                    Document Preview
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                             </div>
-                            <div class="modal-body">
-                                <div id="previewContent">
-                                    <!-- Preview content will be loaded here -->
+                            <div class="modal-body p-0">
+                                <!-- Loading spinner for preview -->
+                                <div id="previewLoading" class="text-center p-5 d-none">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Generating preview...</span>
+                                    </div>
+                                    <p class="mt-2">Generating document preview...</p>
+                                </div>
+                                
+                                <!-- PDF Viewer -->
+                                <div id="pdfPreviewContainer" class="d-none">
+                                    <iframe id="pdfViewer" 
+                                            style="width: 100%; height: 600px; border: none;"
+                                            title="Document Preview">
+                                    </iframe>
+                                </div>
+                                
+                                <!-- Fallback text preview -->
+                                <div id="textPreviewContainer" class="p-4 d-none">
+                                    <div class="alert alert-info">
+                                        <i class="bi bi-info-circle me-2"></i>
+                                        PDF preview not available. Showing text preview instead.
+                                    </div>
+                                    <pre id="previewContent" class="bg-light p-3 rounded" style="white-space: pre-wrap; font-size: 0.9em;">
+                                        <!-- Text preview content will be loaded here -->
+                                    </pre>
+                                </div>
+                                
+                                <!-- Error message -->
+                                <div id="previewError" class="p-4 d-none">
+                                    <div class="alert alert-danger">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        <strong>Preview Error:</strong> <span id="previewErrorMessage"></span>
+                                    </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="document.getElementById('generateBtn').click()">
-                                    Generate Document
+                                    <i class="bi bi-download me-1"></i>
+                                    Generate & Download Word Doc
                                 </button>
                             </div>
                         </div>

@@ -5,6 +5,7 @@ import os
 from datetime import datetime
 from typing import Dict, Any
 from ..models import WorkoutData
+from docx2pdf import convert
 
 class DocumentService:
     """Service for processing Word documents and replacing template variables"""
@@ -194,6 +195,51 @@ class DocumentService:
         except Exception as e:
             raise Exception(f"Error analyzing template: {str(e)}")
     
+    def generate_preview_pdf(self, workout_data: WorkoutData, template_path: Path) -> Path:
+        """
+        Generate a PDF preview of the filled document
+        
+        Args:
+            workout_data: The workout information to fill into the template
+            template_path: Path to the template Word document
+            
+        Returns:
+            Path to the generated PDF file
+        """
+        try:
+            # First generate the Word document
+            word_path = self.generate_document(workout_data, template_path)
+            
+            # Convert to PDF
+            pdf_path = self._convert_to_pdf(word_path)
+            
+            return pdf_path
+            
+        except Exception as e:
+            raise Exception(f"Error generating PDF preview: {str(e)}")
+    
+    def _convert_to_pdf(self, word_path: Path) -> Path:
+        """
+        Convert a Word document to PDF
+        
+        Args:
+            word_path: Path to the Word document
+            
+        Returns:
+            Path to the generated PDF file
+        """
+        try:
+            # Generate PDF filename
+            pdf_path = word_path.with_suffix('.pdf')
+            
+            # Convert Word to PDF
+            convert(str(word_path), str(pdf_path))
+            
+            return pdf_path
+            
+        except Exception as e:
+            raise Exception(f"Error converting to PDF: {str(e)}")
+    
     def cleanup_old_files(self, max_age_hours: int = 24) -> int:
         """
         Clean up old generated files
@@ -208,14 +254,16 @@ class DocumentService:
             deleted_count = 0
             current_time = datetime.now()
             
-            for file_path in self.temp_dir.glob("gym_log_*.docx"):
-                # Get file modification time
-                file_time = datetime.fromtimestamp(file_path.stat().st_mtime)
-                age_hours = (current_time - file_time).total_seconds() / 3600
-                
-                if age_hours > max_age_hours:
-                    file_path.unlink()
-                    deleted_count += 1
+            # Clean up both Word and PDF files
+            for pattern in ["gym_log_*.docx", "gym_log_*.pdf"]:
+                for file_path in self.temp_dir.glob(pattern):
+                    # Get file modification time
+                    file_time = datetime.fromtimestamp(file_path.stat().st_mtime)
+                    age_hours = (current_time - file_time).total_seconds() / 3600
+                    
+                    if age_hours > max_age_hours:
+                        file_path.unlink()
+                        deleted_count += 1
             
             return deleted_count
             

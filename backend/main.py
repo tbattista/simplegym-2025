@@ -71,6 +71,31 @@ async def list_templates():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error listing templates: {str(e)}")
 
+@app.post("/api/preview")
+async def preview_document(workout_data: WorkoutData):
+    """Generate a PDF preview of the filled document"""
+    try:
+        # Validate template exists
+        template_path = Path("templates") / workout_data.template_name
+        if not template_path.exists():
+            raise HTTPException(
+                status_code=404, 
+                detail=f"Template '{workout_data.template_name}' not found"
+            )
+        
+        # Generate the PDF preview
+        pdf_path = document_service.generate_preview_pdf(workout_data, template_path)
+        
+        # Return the PDF for viewing
+        return FileResponse(
+            path=pdf_path,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "inline"}  # Display in browser instead of download
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating preview: {str(e)}")
+
 @app.post("/api/generate")
 async def generate_document(workout_data: WorkoutData):
     """Generate a filled Word document from template and workout data"""

@@ -299,7 +299,7 @@ class GymLogApp {
         }
     }
 
-    showPreview() {
+    async showPreview() {
         const formData = this.collectFormData();
         
         if (!formData.template_name) {
@@ -307,6 +307,84 @@ class GymLogApp {
             return;
         }
 
+        // Show modal first
+        const modal = new bootstrap.Modal(document.getElementById('previewModal'));
+        modal.show();
+
+        // Show loading state
+        this.showPreviewLoading(true);
+
+        try {
+            // Try to generate PDF preview
+            const response = await fetch(`${this.apiBase}/api/preview`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                // PDF generation successful
+                const blob = await response.blob();
+                const pdfUrl = URL.createObjectURL(blob);
+                
+                // Show PDF viewer
+                document.getElementById('pdfViewer').src = pdfUrl;
+                this.showPdfPreview();
+                
+                // Clean up the blob URL after a delay to allow loading
+                setTimeout(() => {
+                    URL.revokeObjectURL(pdfUrl);
+                }, 30000); // Clean up after 30 seconds
+                
+            } else {
+                // PDF generation failed, fall back to text preview
+                const errorData = await response.json();
+                console.warn('PDF preview failed, falling back to text preview:', errorData);
+                this.showTextPreview(formData);
+            }
+        } catch (error) {
+            console.error('Error generating preview:', error);
+            // Fall back to text preview
+            this.showTextPreview(formData);
+        } finally {
+            this.showPreviewLoading(false);
+        }
+    }
+
+    showPreviewLoading(show) {
+        const loading = document.getElementById('previewLoading');
+        const pdfContainer = document.getElementById('pdfPreviewContainer');
+        const textContainer = document.getElementById('textPreviewContainer');
+        const errorContainer = document.getElementById('previewError');
+        
+        if (show) {
+            loading.classList.remove('d-none');
+            pdfContainer.classList.add('d-none');
+            textContainer.classList.add('d-none');
+            errorContainer.classList.add('d-none');
+        } else {
+            loading.classList.add('d-none');
+        }
+    }
+
+    showPdfPreview() {
+        const pdfContainer = document.getElementById('pdfPreviewContainer');
+        const textContainer = document.getElementById('textPreviewContainer');
+        const errorContainer = document.getElementById('previewError');
+        
+        pdfContainer.classList.remove('d-none');
+        textContainer.classList.add('d-none');
+        errorContainer.classList.add('d-none');
+    }
+
+    showTextPreview(formData) {
+        const pdfContainer = document.getElementById('pdfPreviewContainer');
+        const textContainer = document.getElementById('textPreviewContainer');
+        const errorContainer = document.getElementById('previewError');
+        
+        // Generate text preview content
         let previewContent = 'REPLACEMENTS THAT WILL BE MADE:\n';
         previewContent += '='.repeat(50) + '\n\n';
 
@@ -357,9 +435,22 @@ class GymLogApp {
 
         document.getElementById('previewContent').textContent = previewContent;
         
-        // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('previewModal'));
-        modal.show();
+        // Show text preview
+        pdfContainer.classList.add('d-none');
+        textContainer.classList.remove('d-none');
+        errorContainer.classList.add('d-none');
+    }
+
+    showPreviewError(message) {
+        const pdfContainer = document.getElementById('pdfPreviewContainer');
+        const textContainer = document.getElementById('textPreviewContainer');
+        const errorContainer = document.getElementById('previewError');
+        
+        document.getElementById('previewErrorMessage').textContent = message;
+        
+        pdfContainer.classList.add('d-none');
+        textContainer.classList.add('d-none');
+        errorContainer.classList.remove('d-none');
     }
 
     showLoading(show) {
