@@ -220,10 +220,20 @@ CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
 ### Cloud Deployment
 
 The application can be deployed to:
+- **Railway** - **RECOMMENDED** - See `RAILWAY_DEPLOYMENT_GUIDE.md` for complete instructions
 - **Heroku** - Add `Procfile`: `web: uvicorn backend.main:app --host 0.0.0.0 --port $PORT`
-- **Railway** - Automatic deployment from Git
 - **DigitalOcean App Platform** - Container or buildpack deployment
 - **AWS/GCP/Azure** - Container services
+
+For detailed Railway deployment instructions (recommended platform), see the comprehensive `RAILWAY_DEPLOYMENT_GUIDE.md`.
+
+#### Why Railway?
+Railway is the recommended platform because it:
+- **Native FastAPI Support** - No WSGI wrappers needed
+- **Full Feature Support** - All endpoints including `/docs` and PDF preview work perfectly
+- **Automatic HTTPS** - Free SSL certificates
+- **Git Integration** - Automatic deployments from your repository
+- **Real-time Monitoring** - Built-in logs and metrics
 
 ## 🐛 Troubleshooting
 

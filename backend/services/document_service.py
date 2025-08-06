@@ -5,7 +5,12 @@ import os
 from datetime import datetime
 from typing import Dict, Any
 from ..models import WorkoutData
-from docx2pdf import convert
+try:
+    from docx2pdf import convert
+    DOCX2PDF_AVAILABLE = True
+except ImportError:
+    DOCX2PDF_AVAILABLE = False
+    print("Warning: docx2pdf not available. PDF generation will be disabled.")
 
 class DocumentService:
     """Service for processing Word documents and replacing template variables"""
@@ -206,6 +211,9 @@ class DocumentService:
         Returns:
             Path to the generated PDF file
         """
+        if not DOCX2PDF_AVAILABLE:
+            raise Exception("PDF generation is not available on this server. Please download the Word document instead.")
+        
         try:
             # First generate the Word document
             word_path = self.generate_document(workout_data, template_path)
@@ -228,6 +236,9 @@ class DocumentService:
         Returns:
             Path to the generated PDF file
         """
+        if not DOCX2PDF_AVAILABLE:
+            raise Exception("PDF conversion is not available on this server.")
+        
         try:
             # Generate PDF filename
             pdf_path = word_path.with_suffix('.pdf')
