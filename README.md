@@ -1,6 +1,6 @@
-# 🏋️ Gym Log Template Editor
+# 👻 Ghost Gym - Log Book
 
-A modern web-based application for creating personalized gym workout logs from Word document templates. Built with FastAPI backend and responsive frontend.
+A modern web-based application for creating personalized gym workout logs from Word document templates. Part of the Ghost Gym series of fitness web applications. Built with FastAPI backend and responsive frontend.
 
 ## ✨ Features
 

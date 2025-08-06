@@ -1,7 +1,7 @@
-# Gym Log Template Editor - Project Plan
+# Ghost Gym - Log Book - Project Plan
 
 ## Overview
-A web-based gym log template editor that allows users to fill in workout details and generate customized Word documents from templates. Built with a FastAPI backend and mobile-responsive frontend.
+A web-based gym log template editor that allows users to fill in workout details and generate customized Word documents from templates. Part of the Ghost Gym series of fitness web applications. Built with a FastAPI backend and mobile-responsive frontend.
 
 ## Tech Stack
 

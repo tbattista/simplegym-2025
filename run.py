@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Development server launcher for Gym Log Template Editor
+Development server launcher for Ghost Gym - Log Book
 """
 
 import uvicorn
@@ -35,7 +35,7 @@ def main():
             print(f"  - {template.name}")
     
     print("\n" + "="*60)
-    print("🏋️  GYM LOG TEMPLATE EDITOR - DEVELOPMENT SERVER")
+    print("👻  GHOST GYM - LOG BOOK - DEVELOPMENT SERVER")
     print("="*60)
     print(f"📁 Project Directory: {project_root}")
     print(f"🌐 Server URL: http://localhost:8000")

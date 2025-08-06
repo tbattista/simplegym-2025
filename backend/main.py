@@ -9,8 +9,8 @@ from .services.document_service import DocumentService
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Gym Log Template Editor API",
-    description="API for generating customized gym log documents from templates",
+    title="Ghost Gym - Log Book API",
+    description="API for generating customized gym log documents from templates. Part of the Ghost Gym series.",
     version="1.0.0"
 )
 

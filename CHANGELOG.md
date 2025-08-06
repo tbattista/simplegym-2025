@@ -1,6 +1,32 @@
 # Changelog
 
-All notable changes to the Gym Log Template Editor project will be documented in this file.
+All notable changes to the Ghost Gym - Log Book project will be documented in this file.
+
+## [1.1.0] - 2025-08-05
+
+### 🎨 Rebranding
+
+#### ✨ Added
+- **Ghost Gym Branding** - Rebranded from "Gym Log Template Editor" to "Ghost Gym - Log Book"
+- **Series Identity** - Positioned as part of the Ghost Gym series of fitness web applications
+- **Updated UI Elements** - Added ghost emoji (👻) and updated icons throughout the interface
+- **Enhanced Branding** - Updated all documentation, API descriptions, and user-facing text
+
+#### 🔄 Changed
+- **Project Name** - "Gym Log Template Editor" → "Ghost Gym - Log Book"
+- **API Title** - Updated FastAPI application title and description
+- **Frontend Interface** - Updated header, footer, and page title with Ghost Gym branding
+- **Documentation** - Updated README.md, PROJECT_PLAN.md, and all documentation files
+- **Development Server** - Updated startup messages with new branding
+
+#### 📚 Documentation Updates
+- **README.md** - Complete rebrand with Ghost Gym identity and series positioning
+- **PROJECT_PLAN.md** - Updated project overview and branding elements
+- **CHANGELOG.md** - Added this rebranding entry
+- **Frontend HTML** - Updated page title, header, and footer elements
+- **Backend API** - Updated FastAPI title and description
+
+---
 
 ## [1.0.0] - 2025-01-07
 
