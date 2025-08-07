@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 from .models import WorkoutData
 from .services.document_service import DocumentService
+from .services.v2.document_service_v2 import DocumentServiceV2
 
 # Initialize FastAPI app
 app = FastAPI(
@@ -23,8 +24,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Initialize document service
-document_service = DocumentService()
+# Initialize document services
+document_service = DocumentService()  # V1 service
+document_service_v2 = DocumentServiceV2()  # V2 service
 
 # Create necessary directories
 os.makedirs("backend/uploads", exist_ok=True)
@@ -144,6 +146,121 @@ async def upload_template(file: UploadFile = File(...)):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error uploading template: {str(e)}")
+
+# V2 API Endpoints
+@app.get("/api/v2/status")
+async def v2_status():
+    """Get V2 system status including Gotenberg availability"""
+    try:
+        gotenberg_available = document_service_v2.is_gotenberg_available()
+        return {
+            "version": "v2",
+            "status": "available",
+            "gotenberg_available": gotenberg_available,
+            "features": {
+                "html_templates": True,
+                "pdf_generation": gotenberg_available,
+                "instant_preview": True
+            }
+        }
+    except Exception as e:
+        return {
+            "version": "v2",
+            "status": "error",
+            "error": str(e),
+            "gotenberg_available": False
+        }
+
+@app.post("/api/v2/preview-html")
+async def preview_html_v2(workout_data: WorkoutData):
+    """Generate HTML preview (instant, no PDF conversion)"""
+    try:
+        # Generate HTML content
+        html_content = document_service_v2.generate_html_document(workout_data)
+        
+        # Return HTML content directly
+        return HTMLResponse(content=html_content)
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating HTML preview: {str(e)}")
+
+@app.post("/api/v2/preview-pdf")
+async def preview_pdf_v2(workout_data: WorkoutData):
+    """Generate PDF preview using Gotenberg (V2 system)"""
+    try:
+        # Check if Gotenberg is available
+        if not document_service_v2.is_gotenberg_available():
+            raise HTTPException(
+                status_code=503,
+                detail="PDF generation is not available. Gotenberg service is not running."
+            )
+        
+        # Generate PDF preview
+        pdf_path = document_service_v2.generate_pdf_preview(workout_data)
+        
+        # Return the PDF for viewing
+        return FileResponse(
+            path=pdf_path,
+            media_type="application/pdf",
+            headers={"Content-Disposition": "inline"}
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating PDF preview: {str(e)}")
+
+@app.post("/api/v2/generate-html")
+async def generate_html_v2(workout_data: WorkoutData):
+    """Generate and download HTML file"""
+    try:
+        # Generate HTML file
+        html_path = document_service_v2.generate_html_file(workout_data)
+        
+        # Return the file for download
+        filename = f"gym_log_{workout_data.workout_name.replace(' ', '_')}_{workout_data.workout_date}.html"
+        
+        return FileResponse(
+            path=html_path,
+            filename=filename,
+            media_type="text/html"
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating HTML document: {str(e)}")
+
+@app.post("/api/v2/generate-pdf")
+async def generate_pdf_v2(workout_data: WorkoutData):
+    """Generate and download PDF file using Gotenberg"""
+    try:
+        # Check if Gotenberg is available
+        if not document_service_v2.is_gotenberg_available():
+            raise HTTPException(
+                status_code=503,
+                detail="PDF generation is not available. Gotenberg service is not running."
+            )
+        
+        # Generate PDF file
+        pdf_path = document_service_v2.generate_pdf_preview(workout_data)
+        
+        # Return the file for download
+        filename = f"gym_log_{workout_data.workout_name.replace(' ', '_')}_{workout_data.workout_date}.pdf"
+        
+        return FileResponse(
+            path=pdf_path,
+            filename=filename,
+            media_type="application/pdf"
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating PDF document: {str(e)}")
+
+@app.get("/api/v2/template-info")
+async def get_template_info_v2():
+    """Get information about the V2 HTML template"""
+    try:
+        template_info = document_service_v2.get_template_info()
+        return template_info
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error getting template info: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

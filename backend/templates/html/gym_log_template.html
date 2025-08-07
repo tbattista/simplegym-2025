@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Log - {{ workout_name }}</title>
+    <style>
+        @page {
+            size: 8.5in 11in;
+            margin: 0.5in;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.2;
+            margin: 0;
+            padding: 0;
+            color: #000;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .title {
+            font-size: 18pt;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .warm-up {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        
+        .warm-up-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .workout-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border: 1px solid #ccc;
+        }
+        
+        .workout-name {
+            font-size: 16pt;
+            font-weight: bold;
+        }
+        
+        .date {
+            font-size: 12pt;
+        }
+        
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 15px;
+        }
+        
+        .exercise-table th,
+        .exercise-table td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+            vertical-align: top;
+        }
+        
+        .exercise-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .exercise-group {
+            margin-bottom: 20px;
+        }
+        
+        .exercise-name {
+            font-weight: bold;
+        }
+        
+        .sets-reps-rest {
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .tracking-cells {
+            width: 60px;
+            text-align: center;
+        }
+        
+        .bonus-section {
+            margin-top: 30px;
+            border-top: 2px solid #000;
+            padding-top: 15px;
+        }
+        
+        .bonus-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .notes-section {
+            margin-top: 30px;
+        }
+        
+        .notes-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .notes-table td {
+            border: 1px solid #000;
+            padding: 10px;
+            height: 60px;
+            vertical-align: top;
+        }
+        
+        .progress-grid {
+            margin-top: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .progress-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .progress-table th,
+        .progress-table td {
+            border: 1px solid #000;
+            padding: 5px;
+            text-align: center;
+            width: 25%;
+        }
+        
+        .progress-table th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+        
+        .progress-cell {
+            height: 80px;
+            vertical-align: top;
+        }
+        
+        .week-label {
+            font-size: 10pt;
+            margin-bottom: 5px;
+        }
+        
+        .abc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 2px;
+            height: 60px;
+        }
+        
+        .abc-cell {
+            border: 1px solid #ccc;
+            font-size: 8pt;
+            text-align: center;
+            padding: 2px;
+        }
+        
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .page-break {
+                page-break-before: always;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">gym log, v4</div>
+    </div>
+    
+    <div class="warm-up">
+        <div class="warm-up-title">Warm Up</div>
+        <div>foam rolling, yoga, body priming – 5+ minute</div>
+    </div>
+    
+    <div class="workout-header">
+        <div class="workout-name">{{ workout_name }}</div>
+        <div class="date">today's date: {{ workout_date }}</div>
+    </div>
+    
+    <table class="exercise-table">
+        <thead>
+            <tr>
+                <th style="width: 30%;">exercise</th>
+                <th style="width: 10%;">sets</th>
+                <th style="width: 10%;">reps</th>
+                <th style="width: 10%;">rest</th>
+                <th style="width: 20%;">wt</th>
+                <th style="width: 20%;">reps</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Exercise Group 1 -->
+            <tr>
+                <td class="exercise-name">
+                    {{ exercise_1a }}<br>
+                    {{ exercise_1b }}<br>
+                    {{ exercise_1c }}
+                </td>
+                <td class="sets-reps-rest">{{ sets_1 }}</td>
+                <td class="sets-reps-rest">{{ reps_1 }}</td>
+                <td class="sets-reps-rest">{{ rest_1 }}</td>
+                <td class="tracking-cells"></td>
+                <td class="tracking-cells"></td>
+            </tr>
+            
+            <!-- Exercise Group 2 -->
+            <tr>
+                <td class="exercise-name">
+                    {{ exercise_2a }}<br>
+                    {{ exercise_2b }}<br>
+                    {{ exercise_2c }}
+                </td>
+                <td class="sets-reps-rest">{{ sets_2 }}</td>
+                <td class="sets-reps-rest">{{ reps_2 }}</td>
+                <td class="sets-reps-rest">{{ rest_2 }}</td>
+                <td class="tracking-cells"></td>
+                <td class="tracking-cells"></td>
+            </tr>
+            
+            <!-- Exercise Group 3 -->
+            <tr>
+                <td class="exercise-name">
+                    {{ exercise_3a }}<br>
+                    {{ exercise_3b }}<br>
+                    {{ exercise_3c }}
+                </td>
+                <td class="sets-reps-rest">{{ sets_3 }}</td>
+                <td class="sets-reps-rest">{{ reps_3 }}</td>
+                <td class="sets-reps-rest">{{ rest_3 }}</td>
+                <td class="tracking-cells"></td>
+                <td class="tracking-cells"></td>
+            </tr>
+            
+            <!-- Exercise Group 4 -->
+            <tr>
+                <td class="exercise-name">
+                    {{ exercise_4a }}<br>
+                    {{ exercise_4b }}<br>
+                    {{ exercise_4c }}
+                </td>
+                <td class="sets-reps-rest">{{ sets_4 }}</td>
+                <td class="sets-reps-rest">{{ reps_4 }}</td>
+                <td class="sets-reps-rest">{{ rest_4 }}</td>
+                <td class="tracking-cells"></td>
+                <td class="tracking-cells"></td>
+            </tr>
+            
+            <!-- Exercise Group 5 -->
+            <tr>
+                <td class="exercise-name">
+                    {{ exercise_5a }}<br>
+                    {{ exercise_5b }}<br>
+                    {{ exercise_5c }}
+                </td>
+                <td class="sets-reps-rest">{{ sets_5 }}</td>
+                <td class="sets-reps-rest">{{ reps_5 }}</td>
+                <td class="sets-reps-rest">{{ rest_5 }}</td>
+                <td class="tracking-cells"></td>
+                <td class="tracking-cells"></td>
+            </tr>
+            
+            <!-- Exercise Group 6 -->
+            <tr>
+                <td class="exercise-name">
+                    {{ exercise_6a }}<br>
+                    {{ exercise_6b }}<br>
+                    {{ exercise_6c }}
+                </td>
+                <td class="sets-reps-rest">{{ sets_6 }}</td>
+                <td class="sets-reps-rest">{{ reps_6 }}</td>
+                <td class="sets-reps-rest">{{ rest_6 }}</td>
+                <td class="tracking-cells"></td>
+                <td class="tracking-cells"></td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <div class="bonus-section">
+        <div class="bonus-title">Bonus Exercises</div>
+        <table class="exercise-table">
+            <tbody>
+                <tr>
+                    <td class="exercise-name" style="width: 30%;">{{ exercise_bonus_1 }}</td>
+                    <td class="sets-reps-rest" style="width: 10%;">{{ sets_bonus_1 }}</td>
+                    <td class="sets-reps-rest" style="width: 10%;">{{ reps_bonus_1 }}</td>
+                    <td class="sets-reps-rest" style="width: 10%;">{{ rest_bonus_1 }}</td>
+                    <td class="tracking-cells" style="width: 20%;"></td>
+                    <td class="tracking-cells" style="width: 20%;"></td>
+                </tr>
+                <tr>
+                    <td class="exercise-name">{{ exercise_bonus_2 }}</td>
+                    <td class="sets-reps-rest">{{ sets_bonus_1 }}</td>
+                    <td class="sets-reps-rest">{{ reps_bonus_2 }}</td>
+                    <td class="sets-reps-rest">{{ rest_bonus_2 }}</td>
+                    <td class="tracking-cells"></td>
+                    <td class="tracking-cells"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="notes-section">
+        <table class="notes-table">
+            <tr>
+                <td style="width: 50%;">
+                    <strong>Mets (Time/Cals):</strong><br><br><br>
+                </td>
+                <td style="width: 50%;">
+                    <strong>Notes:</strong><br><br><br>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    <div class="progress-grid">
+        <table class="progress-table">
+            <thead>
+                <tr>
+                    <th>Week 1</th>
+                    <th>Week 2</th>
+                    <th>Week 3</th>
+                    <th>Week 4</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 6 rows for the 6 exercise groups -->
+                <tr>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                    <td class="progress-cell">
+                        <div class="abc-grid">
+                            <div class="abc-cell">a</div>
+                            <div class="abc-cell">b</div>
+                            <div class="abc-cell">c</div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
