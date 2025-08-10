@@ -37,13 +37,25 @@ app.mount("/static", StaticFiles(directory="frontend"), name="static")
 
 @app.get("/", response_class=HTMLResponse)
 async def serve_frontend():
-    """Serve the main frontend page"""
+    """Serve the main frontend page (V1)"""
     try:
         with open("frontend/index.html", "r", encoding="utf-8") as f:
             return HTMLResponse(content=f.read())
     except FileNotFoundError:
         return HTMLResponse(
             content="<h1>Frontend not found</h1><p>Please ensure frontend/index.html exists</p>",
+            status_code=404
+        )
+
+@app.get("/v2", response_class=HTMLResponse)
+async def serve_v2_frontend():
+    """Serve the V2 frontend page"""
+    try:
+        with open("frontend/v2-index.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h1>V2 Frontend not found</h1><p>Please ensure frontend/v2-index.html exists</p>",
             status_code=404
         )
 
