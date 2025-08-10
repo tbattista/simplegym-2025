@@ -8,8 +8,8 @@ class GotenbergClient:
     """Client for interacting with Gotenberg service for HTML to PDF conversion"""
     
     def __init__(self, gotenberg_url: str = None):
-        # For now, we'll use a placeholder URL - will be configured via environment variable
-        self.gotenberg_url = gotenberg_url or os.getenv('GOTENBERG_SERVICE_URL', 'http://localhost:3000')
+        # Use GOTENBERG_URL environment variable to match railway.toml configuration
+        self.gotenberg_url = gotenberg_url or os.getenv('GOTENBERG_URL', 'http://localhost:3000')
         self.available = False
         self._check_availability()
     

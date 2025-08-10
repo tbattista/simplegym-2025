@@ -1,23 +1,15 @@
 [build]
 builder = "dockerfile"
-dockerfilePath = "Dockerfile"
+dockerfilePath = "Dockerfile.python"
 
 [deploy]
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
 
 [[deploy.environmentVariables]]
-name = "GOTENBERG_API_TIMEOUT"
-value = "30s"
+name = "GOTENBERG_URL"
+value = "https://simplegym-gotenberg-production.up.railway.app"
 
 [[deploy.environmentVariables]]
-name = "GOTENBERG_API_ROOT_PATH"
-value = "/"
-
-[[deploy.environmentVariables]]
-name = "GOTENBERG_CHROMIUM_DISABLE_WEB_SECURITY"
-value = "true"
-
-[[deploy.environmentVariables]]
-name = "GOTENBERG_CHROMIUM_IGNORE_CERTIFICATE_ERRORS"
-value = "true"
+name = "ENVIRONMENT"
+value = "production"

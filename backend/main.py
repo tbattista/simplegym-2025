@@ -183,6 +183,29 @@ async def v2_status():
             "gotenberg_available": False
         }
 
+@app.get("/api/v2/templates")
+async def list_templates_v2():
+    """List available HTML templates for V2"""
+    try:
+        templates_dir = Path("backend/templates/html")
+        if not templates_dir.exists():
+            return {"templates": [], "message": "HTML templates directory not found"}
+        
+        # Find all .html files in templates directory
+        template_files = [
+            f.name for f in templates_dir.glob("*.html") 
+            if not f.name.startswith("~")  # Exclude temp files
+        ]
+        
+        return {
+            "templates": template_files,
+            "count": len(template_files),
+            "version": "v2",
+            "template_type": "html"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error listing V2 templates: {str(e)}")
+
 @app.post("/api/v2/preview-html")
 async def preview_html_v2(workout_data: WorkoutData):
     """Generate HTML preview (instant, no PDF conversion)"""
