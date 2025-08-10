@@ -82,7 +82,7 @@ class GymLogAppV2 {
                         <button class="accordion-button collapsed" type="button" 
                                 data-bs-toggle="collapse" data-bs-target="#exerciseGroup${i}"
                                 id="accordionHeader${i}">
-                            <i class="bi bi-trophy me-2"></i>
+                            <span class="exercise-number me-2">${i}</span>
                             <span class="accordion-title" id="accordionTitle${i}">Exercise Group ${i}</span>
                         </button>
                     </h2>
@@ -92,14 +92,14 @@ class GymLogAppV2 {
                                 <!-- Exercise Inputs -->
                                 <div class="exercise-inputs">
                                     <h6>
-                                        <i class="bi bi-list-ul me-2"></i>
+                                        <span class="exercise-number me-2">${i}</span>
                                         Exercises
                                     </h6>
                                     <div class="row">
-                                        ${['a', 'b', 'c'].map(letter => `
+                                        ${['a', 'b', 'c'].map((letter, index) => `
                                             <div class="col-md-4 mb-3">
                                                 <label for="exercise-${i}${letter}" class="form-label">
-                                                    Exercise ${i}${letter}
+                                                    <span class="exercise-number me-1">${i}.${index + 1}</span>Exercise ${i}${letter}
                                                 </label>
                                                 <input 
                                                     type="text" 
