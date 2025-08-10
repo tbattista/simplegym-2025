@@ -9,7 +9,12 @@ class GotenbergClient:
     
     def __init__(self, gotenberg_url: str = None):
         # Use GOTENBERG_URL environment variable to match railway.toml configuration
-        self.gotenberg_url = gotenberg_url or os.getenv('GOTENBERG_URL', 'http://localhost:3000')
+        # Also check Railway's auto-generated service URL as fallback
+        self.gotenberg_url = (
+            gotenberg_url or 
+            os.getenv('GOTENBERG_URL') or 
+            f"https://{os.getenv('RAILWAY_SERVICE_GOTENBERG_URL', 'localhost:3000')}"
+        )
         self.available = False
         self._check_availability()
     
