@@ -80,9 +80,10 @@ class GymLogAppV2 {
                 <div class="accordion-item ${this.accordionClasses[i-1]}">
                     <h2 class="accordion-header">
                         <button class="accordion-button collapsed" type="button" 
-                                data-bs-toggle="collapse" data-bs-target="#exerciseGroup${i}">
+                                data-bs-toggle="collapse" data-bs-target="#exerciseGroup${i}"
+                                id="accordionHeader${i}">
                             <i class="bi bi-trophy me-2"></i>
-                            Exercise Group ${i}
+                            <span class="accordion-title" id="accordionTitle${i}">Exercise Group ${i}</span>
                         </button>
                     </h2>
                     <div id="exerciseGroup${i}" class="accordion-collapse collapse">
@@ -102,8 +103,9 @@ class GymLogAppV2 {
                                                 </label>
                                                 <input 
                                                     type="text" 
-                                                    class="form-control" 
+                                                    class="form-control exercise-input" 
                                                     id="exercise-${i}${letter}" 
+                                                    data-group="${i}"
                                                     placeholder="${this.exerciseDefaults[`${i}${letter}`] || 'Exercise name'}"
                                                     value="${this.exerciseDefaults[`${i}${letter}`] || ''}"
                                                 >
@@ -157,6 +159,14 @@ class GymLogAppV2 {
                 </div>
             `;
             container.appendChild(accordionDiv);
+        }
+
+        // Set up event listeners for dynamic header updates
+        this.setupExerciseInputListeners();
+        
+        // Initialize accordion headers with current values
+        for (let i = 1; i <= 6; i++) {
+            this.updateAccordionHeader(i);
         }
     }
 
@@ -612,6 +622,83 @@ class GymLogAppV2 {
                 bsCollapse.hide();
             }
         });
+    }
+
+    // Set up event listeners for exercise input fields to update accordion headers
+    setupExerciseInputListeners() {
+        document.querySelectorAll('.exercise-input').forEach(input => {
+            input.addEventListener('input', (e) => {
+                const groupNumber = parseInt(e.target.dataset.group);
+                this.updateAccordionHeader(groupNumber);
+            });
+        });
+    }
+
+    // Update accordion header with current exercise names
+    updateAccordionHeader(groupNumber) {
+        const titleElement = document.getElementById(`accordionTitle${groupNumber}`);
+        if (!titleElement) return;
+
+        const exercises = [];
+        
+        // Get current values for the three exercises in this group
+        for (const letter of ['a', 'b', 'c']) {
+            const input = document.getElementById(`exercise-${groupNumber}${letter}`);
+            if (input) {
+                const value = input.value.trim();
+                if (value) {
+                    // Truncate long exercise names
+                    const truncated = this.truncateExerciseName(value);
+                    exercises.push(truncated);
+                } else {
+                    // Use placeholder or default format if empty
+                    exercises.push(`Exercise ${groupNumber}${letter}`);
+                }
+            }
+        }
+
+        // Join exercises with bullet points
+        const headerText = exercises.join(' • ');
+        
+        // Update the accordion title
+        titleElement.textContent = headerText;
+        
+        // Add tooltip with full names if any were truncated
+        const fullNames = [];
+        for (const letter of ['a', 'b', 'c']) {
+            const input = document.getElementById(`exercise-${groupNumber}${letter}`);
+            if (input && input.value.trim()) {
+                fullNames.push(input.value.trim());
+            }
+        }
+        
+        if (fullNames.length > 0) {
+            const fullText = fullNames.join(' • ');
+            if (fullText !== headerText) {
+                titleElement.setAttribute('title', fullText);
+            } else {
+                titleElement.removeAttribute('title');
+            }
+        }
+    }
+
+    // Truncate exercise name if too long
+    truncateExerciseName(name, maxLength = 18) {
+        if (name.length <= maxLength) {
+            return name;
+        }
+        
+        // Try to truncate at word boundary
+        const truncated = name.substring(0, maxLength);
+        const lastSpace = truncated.lastIndexOf(' ');
+        
+        if (lastSpace > maxLength * 0.6) {
+            // If we can find a good word boundary, use it
+            return truncated.substring(0, lastSpace) + '...';
+        } else {
+            // Otherwise just truncate and add ellipsis
+            return truncated + '...';
+        }
     }
 }
 
