@@ -8,7 +8,7 @@ restartPolicyMaxRetries = 3
 
 [[deploy.environmentVariables]]
 name = "GOTENBERG_URL"
-value = "https://simplegym-gotenberg-production.up.railway.app"
+value = "https://gotenberg-production-c928.up.railway.app"
 
 [[deploy.environmentVariables]]
 name = "ENVIRONMENT"
