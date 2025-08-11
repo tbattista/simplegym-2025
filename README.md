@@ -1,17 +1,26 @@
-# 👻 Ghost Gym - Log Book
+# 👻 Ghost Gym - Log Book V2
 
-A modern web-based application for creating personalized gym workout logs from Word document templates. Part of the Ghost Gym series of fitness web applications. Built with FastAPI backend and responsive frontend.
+A modern web-based application for creating personalized gym workout logs with dual-system support. Part of the Ghost Gym series of fitness web applications. Built with FastAPI backend, responsive frontend, and cloud-based PDF generation.
 
 ## ✨ Features
 
-- **📱 Mobile-Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
+### V2 System (HTML + PDF Generation)
+- **🚀 Instant HTML Preview** - Real-time HTML generation with no delays
+- **📄 Professional PDF Generation** - Cloud-based PDF conversion via Gotenberg
+- **⚡ Lightning Fast** - HTML templates render instantly
+- **🎨 Print-Optimized Design** - Perfect formatting for 8.5" x 11" documents
+- **☁️ Cloud-Powered** - Gotenberg service deployed on Railway for reliable PDF generation
+
+### V1 System (Word Document Processing)
 - **📄 Word Document Processing** - Fill in Word templates with workout data
+- **🔄 Clean Output** - Professional Word documents with no template artifacts
+
+### Universal Features
+- **📱 Mobile-Responsive Design** - Works seamlessly on desktop, tablet, and mobile devices
 - **🎯 Complete Exercise Management** - 6 exercise groups with 3 exercises each (1a, 1b, 1c format)
 - **📊 Sets, Reps & Rest** - Full workout parameter inputs for each exercise group
 - **⭐ Bonus Exercises** - Additional exercises section with complete data
 - **👁️ Live Preview** - Preview all changes before generating documents
-- **⚡ Fast Generation** - Quick document processing and download
-- **🔄 Clean Output** - Professional Word documents with no template artifacts
 - **⌨️ Keyboard Shortcuts** - Ctrl+Enter to generate, Ctrl+P for preview
 - **🎨 Modern UI** - Bootstrap 5 with custom styling and animations
 
@@ -52,27 +61,44 @@ A modern web-based application for creating personalized gym workout logs from W
 
 ```
 simplegym_2025/
-├── PROJECT_PLAN.md          # Detailed project plan and architecture
 ├── README.md                # This file
+├── CHANGELOG.md             # Version history and updates
 ├── requirements.txt         # Python dependencies
 ├── run.py                   # Development server launcher
-├── backend/                 # FastAPI backend
-│   ├── main.py              # API endpoints and server setup
-│   ├── models.py            # Data models and validation
-│   ├── services/            # Business logic
+├── test_v2.py              # V2 system test suite
+├── Dockerfile              # Container configuration
+├── Procfile                # Railway deployment config
+├── railway.toml            # Railway service configuration
+├── backend/                # FastAPI backend
+│   ├── main.py             # API endpoints (V1 + V2)
+│   ├── models.py           # Data models and validation
+│   ├── services/           # Business logic
 │   │   ├── __init__.py
-│   │   └── document_service.py  # Word document processing
-│   └── uploads/             # Temporary file storage
-├── frontend/                # Web interface
-│   ├── index.html           # Main application page
+│   │   ├── document_service.py     # V1: Word document processing
+│   │   └── v2/                     # V2 system
+│   │       ├── __init__.py
+│   │       ├── document_service_v2.py  # V2: HTML/PDF processing
+│   │       └── gotenberg_client.py     # Gotenberg integration
+│   ├── templates/          # V2 HTML templates
+│   │   └── html/
+│   │       └── gym_log_template.html   # V2 HTML template
+│   └── uploads/            # Generated files storage
+├── frontend/               # Web interface
+│   ├── index.html          # Main application page
 │   ├── css/
-│   │   └── style.css        # Custom styles and responsive design
+│   │   └── style.css       # Custom styles and responsive design
 │   └── js/
-│       └── app.js           # Frontend application logic
-└── templates/               # Word document templates
-    ├── master_doc.docx      # Main template
+│       └── app.js          # Frontend application logic
+├── gotenberg-service/      # Gotenberg deployment (Railway)
+│   ├── Dockerfile          # Gotenberg container
+│   ├── railway.toml        # Gotenberg service config
+│   ├── deploy.sh           # Deployment script (Unix)
+│   ├── deploy.ps1          # Deployment script (Windows)
+│   └── README.md           # Gotenberg service documentation
+└── templates/              # V1 Word document templates
+    ├── master_doc.docx     # Main template
     ├── master_doc-test.docx # Test template
-    └── master_doc_og.docx   # Original template
+    └── master_doc_og.docx  # Original template
 ```
 
 ## 🎯 Usage
@@ -121,13 +147,25 @@ Bonus Exercises:
 
 ## 🔧 API Endpoints
 
+### V1 Endpoints (Word Documents)
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/` | Serve main web interface |
 | GET | `/api/health` | Health check |
-| GET | `/api/templates` | List available templates |
-| POST | `/api/generate` | Generate filled document |
+| GET | `/api/templates` | List available Word templates |
+| POST | `/api/preview` | Generate PDF preview from Word template |
+| POST | `/api/generate` | Generate filled Word document |
 | POST | `/api/upload-template` | Upload new template (future) |
+
+### V2 Endpoints (HTML + PDF)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v2/status` | V2 system status and Gotenberg availability |
+| POST | `/api/v2/preview-html` | Generate instant HTML preview |
+| POST | `/api/v2/preview-pdf` | Generate PDF preview via Gotenberg |
+| POST | `/api/v2/generate-html` | Generate and download HTML file |
+| POST | `/api/v2/generate-pdf` | Generate and download PDF file |
+| GET | `/api/v2/template-info` | Get HTML template information |
 
 ## 🛠️ Development
 

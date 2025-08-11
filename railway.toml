@@ -1,11 +1,15 @@
 [build]
-builder = "NIXPACKS"
+builder = "dockerfile"
+dockerfilePath = "Dockerfile.python"
 
 [deploy]
-healthcheckPath = "/api/health"
-healthcheckTimeout = 300
-restartPolicyType = "ON_FAILURE"
-restartPolicyMaxRetries = 10
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
 
-[environments.production]
-variables = { }
+[[deploy.environmentVariables]]
+name = "GOTENBERG_URL"
+value = "https://gotenberg-production-c928.up.railway.app"
+
+[[deploy.environmentVariables]]
+name = "ENVIRONMENT"
+value = "production"

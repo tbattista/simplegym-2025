@@ -47,13 +47,19 @@ def main():
     print("\n")
     
     try:
+        # Get port from environment variable (for Railway) or default to 8000
+        port = int(os.environ.get("PORT", 8000))
+        
+        # Check if we're in production (Railway sets this)
+        is_production = os.environ.get("RAILWAY_ENVIRONMENT") == "production" or os.environ.get("ENVIRONMENT") == "production"
+        
         # Launch the FastAPI server with uvicorn
         uvicorn.run(
             "backend.main:app",
             host="0.0.0.0",
-            port=8000,
-            reload=True,
-            reload_dirs=["backend", "frontend"],
+            port=port,
+            reload=not is_production,  # Disable reload in production
+            reload_dirs=["backend", "frontend"] if not is_production else None,
             log_level="info"
         )
     except KeyboardInterrupt:
