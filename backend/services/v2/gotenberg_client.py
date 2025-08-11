@@ -51,16 +51,16 @@ class GotenbergClient:
                 'files': ('index.html', open(temp_html_path, 'rb'), 'text/html')
             }
             
-            # PDF conversion options
+            # PDF conversion options for A5 paper
             data = {
-                'paperWidth': '8.5',
-                'paperHeight': '11',
-                'marginTop': '0.5',
-                'marginBottom': '0.5',
-                'marginLeft': '0.5',
-                'marginRight': '0.5',
+                'paperWidth': '5.83',
+                'paperHeight': '8.27',
+                'marginTop': '0.4',
+                'marginBottom': '0.4',
+                'marginLeft': '0.3',
+                'marginRight': '0.3',
                 'printBackground': 'true',
-                'preferCSSPageSize': 'false'
+                'preferCSSPageSize': 'true'
             }
             
             # Make request to Gotenberg
