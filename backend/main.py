@@ -59,6 +59,18 @@ async def serve_v2_frontend():
             status_code=404
         )
 
+@app.get("/v2-admin", response_class=HTMLResponse)
+async def serve_v2_admin_frontend():
+    """Serve the V2 Admin frontend page"""
+    try:
+        with open("frontend/v2-admin.html", "r", encoding="utf-8") as f:
+            return HTMLResponse(content=f.read())
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h1>V2 Admin Frontend not found</h1><p>Please ensure frontend/v2-admin.html exists</p>",
+            status_code=404
+        )
+
 @app.get("/api/health")
 async def health_check():
     """Health check endpoint"""
