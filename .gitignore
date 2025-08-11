@@ -62,3 +62,4 @@ backend/uploads/*.docx
 
 # Test downloads (user generated)
 test downloads/
+temp-adminator/
