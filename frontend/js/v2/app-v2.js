@@ -171,6 +171,9 @@ class GymLogAppV2 {
     }
 
     async checkV2Status() {
+        // Set initial checking state
+        this.updateStatusIcon('checking');
+        
         try {
             const response = await fetch(`${this.apiBase}/api/v2/status`);
             const data = await response.json();
@@ -179,9 +182,9 @@ class GymLogAppV2 {
                 this.v2Available = data.status === 'available';
                 this.pdfAvailable = data.gotenberg_available;
                 
-                // Update status indicators
-                this.updateStatusBadge('v2Status', this.v2Available);
-                this.updateStatusBadge('pdfStatus', this.pdfAvailable);
+                // Update status icon and popover
+                this.updateStatusIcon();
+                this.setupStatusPopover();
                 
                 // Update format options based on availability
                 this.updateFormatOptions();
@@ -193,20 +196,85 @@ class GymLogAppV2 {
             console.error('Error checking V2 status:', error);
             this.v2Available = false;
             this.pdfAvailable = false;
-            this.updateStatusBadge('v2Status', false);
-            this.updateStatusBadge('pdfStatus', false);
+            this.updateStatusIcon('error');
+            this.setupStatusPopover();
             this.showAlert('V2 backend is not available. Some features may be limited.', 'warning');
         }
     }
 
+    updateStatusIcon(state = null) {
+        const indicator = document.getElementById('statusIndicator');
+        
+        if (state === 'checking') {
+            indicator.className = 'status-indicator status-checking';
+            return;
+        }
+        
+        if (state === 'error') {
+            indicator.className = 'status-indicator status-error';
+            return;
+        }
+        
+        // Determine status based on service availability
+        if (this.v2Available && this.pdfAvailable) {
+            indicator.className = 'status-indicator status-all-good';
+        } else if (this.v2Available) {
+            indicator.className = 'status-indicator status-partial';
+        } else {
+            indicator.className = 'status-indicator status-error';
+        }
+    }
+
+    setupStatusPopover() {
+        const statusIcon = document.getElementById('statusIcon');
+        
+        // Create popover content
+        const popoverContent = `
+            <div class="status-popover-content">
+                <div class="status-item">
+                    <span><i class="bi bi-server me-2"></i>V2 Backend</span>
+                    <span class="status-badge ${this.v2Available ? 'available' : 'unavailable'}">
+                        ${this.v2Available ? 'Available' : 'Unavailable'}
+                    </span>
+                </div>
+                <div class="status-item">
+                    <span><i class="bi bi-file-earmark-pdf me-2"></i>PDF Generation</span>
+                    <span class="status-badge ${this.pdfAvailable ? 'available' : 'unavailable'}">
+                        ${this.pdfAvailable ? 'Available' : 'Unavailable'}
+                    </span>
+                </div>
+                <div class="status-item">
+                    <span><i class="bi bi-code-slash me-2"></i>HTML Templates</span>
+                    <span class="status-badge available">Available</span>
+                </div>
+            </div>
+        `;
+        
+        // Initialize or update popover
+        let popover = bootstrap.Popover.getInstance(statusIcon);
+        if (popover) {
+            popover.dispose();
+        }
+        
+        new bootstrap.Popover(statusIcon, {
+            content: popoverContent,
+            html: true,
+            trigger: 'hover click',
+            placement: 'bottom',
+            title: 'System Status'
+        });
+    }
+
     updateStatusBadge(elementId, available) {
         const badge = document.getElementById(elementId);
-        if (available) {
-            badge.textContent = 'Available';
-            badge.className = 'status-badge available';
-        } else {
-            badge.textContent = 'Unavailable';
-            badge.className = 'status-badge unavailable';
+        if (badge) {
+            if (available) {
+                badge.textContent = 'Available';
+                badge.className = 'status-badge available';
+            } else {
+                badge.textContent = 'Unavailable';
+                badge.className = 'status-badge unavailable';
+            }
         }
     }
 

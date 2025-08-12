@@ -56,33 +56,88 @@ body {
     opacity: 0.9;
 }
 
-/* Status Dashboard */
-.status-dashboard {
-    background: var(--dark-surface);
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    margin-bottom: 2rem;
-    overflow: hidden;
-    border: 1px solid var(--dark-border);
+/* Status Icon */
+.status-icon-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
 }
 
-.status-dashboard .card-header {
+.status-icon {
+    position: relative;
+    width: 50px;
+    height: 50px;
     background: var(--gradient-primary);
-    color: var(--text-primary);
-    border: none;
-    font-weight: 600;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(49, 130, 206, 0.3);
+    transition: all 0.3s ease;
+    color: white;
+    font-size: 1.2rem;
 }
 
-.status-dashboard .card-body {
-    background: var(--dark-surface);
-    color: var(--text-secondary);
+.status-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(49, 130, 206, 0.4);
+}
+
+.status-indicator {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid white;
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.status-all-good {
+    background: var(--success-green);
+}
+
+.status-indicator.status-partial {
+    background: #ffc107;
+}
+
+.status-indicator.status-error {
+    background: #dc3545;
+}
+
+.status-indicator.status-checking {
+    background: var(--text-muted);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Status Popover Content */
+.status-popover-content {
+    min-width: 280px;
 }
 
 .status-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.75rem 0;
+    padding: 0.5rem 0;
     border-bottom: 1px solid var(--dark-border);
     color: var(--text-secondary);
 }
@@ -94,7 +149,7 @@ body {
 .status-badge {
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     font-weight: 600;
 }
 
@@ -106,6 +161,33 @@ body {
 .status-badge.unavailable {
     background: #dc3545;
     color: white;
+}
+
+/* Custom popover styling for dark theme */
+.popover {
+    background: var(--dark-surface);
+    border: 1px solid var(--dark-border);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.popover .popover-header {
+    background: var(--gradient-primary);
+    color: white;
+    border-bottom: 1px solid var(--dark-border);
+    font-weight: 600;
+}
+
+.popover .popover-body {
+    background: var(--dark-surface);
+    color: var(--text-secondary);
+}
+
+.popover .popover-arrow::before {
+    border-bottom-color: var(--dark-surface);
+}
+
+.popover .popover-arrow::after {
+    border-bottom-color: var(--dark-surface);
 }
 
 /* Accordion Styles */
