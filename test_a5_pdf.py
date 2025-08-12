@@ -115,8 +115,9 @@ def test_a5_pdf_generation():
         print("\n🎯 A5 PDF Configuration Summary:")
         print("   - Paper Size: A5 (5.83\" x 8.27\")")
         print("   - Margins: 0.4\" top/bottom, 0.3\" left/right")
-        print("   - Page 1: Main workout table")
-        print("   - Page 2: Progress tracking grid")
+        print("   - Page 1: Cover page with 'gym log v2'")
+        print("   - Page 2: Main workout table")
+        print("   - Page 3: Progress tracking grid")
         print("   - Font sizes optimized for A5 format")
         print("   - Ready for double-sided printing!")
         
